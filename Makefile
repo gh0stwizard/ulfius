@@ -18,32 +18,47 @@ EXAMPLES_LOCATION=./example_programs
 UWSC_LOCATION=./tools/uwsc
 TESTS_LOCATION=./test
 
-all:
-	cd $(LIBULFIUS_LOCATION) && $(MAKE) $*
-	cd $(UWSC_LOCATION) && $(MAKE) $*
+all: library uwsc
 
-debug:
-	cd $(LIBULFIUS_LOCATION) && $(MAKE) debug $*
-	cd $(UWSC_LOCATION) && $(MAKE) debug $*
+library:
+	$(MAKE) -C $(LIBULFIUS_LOCATION) $*
+
+uwsc:
+	$(MAKE) -C $(UWSC_LOCATION) $*
+
+debug: debug-library debug-uwsc
+
+debug-library:
+	$(MAKE) -C $(LIBULFIUS_LOCATION) debug $*
+
+debug-uwsc:
+	$(MAKE) -C $(UWSC_LOCATION) debug $*
 
 clean:
-	cd $(LIBULFIUS_LOCATION) && $(MAKE) clean
-	cd $(EXAMPLES_LOCATION) && $(MAKE) clean
-	cd $(UWSC_LOCATION) && $(MAKE) clean
-	cd $(TESTS_LOCATION) && $(MAKE) clean
+	$(MAKE) -C $(LIBULFIUS_LOCATION) clean
+	$(MAKE) -C $(EXAMPLES_LOCATION) clean
+	$(MAKE) -C $(UWSC_LOCATION) clean
+	$(MAKE) -C $(TESTS_LOCATION) clean
 
 examples:
-	cd $(EXAMPLES_LOCATION) && $(MAKE) $*
+	$(MAKE) -C $(EXAMPLES_LOCATION) $*
 
-install:
-	cd $(LIBULFIUS_LOCATION) && $(MAKE) install
-	cd $(UWSC_LOCATION) && $(MAKE) install
+install: install-library install-uwsc
+
+install-library: library
+	$(MAKE) -C $(LIBULFIUS_LOCATION) install
+
+static-install-library: library
+	$(MAKE) -C $(LIBULFIUS_LOCATION) static-install
+
+install-uwsc: uwsc
+	$(MAKE) -C $(UWSC_LOCATION) install
 
 uninstall:
-	cd $(LIBULFIUS_LOCATION) && $(MAKE) uninstall
+	$(MAKE) -C $(LIBULFIUS_LOCATION) uninstall
 
 check:
-	cd $(TESTS_LOCATION) && $(MAKE)
+	$(MAKE) -C $(TESTS_LOCATION)
 
 doxygen:
 	doxygen doc/doxygen.cfg

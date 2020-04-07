@@ -21,8 +21,11 @@ ifndef YDERFLAG
 LYDER=-lyder
 endif
 
-CFLAGS+=-c -Wall -I$(ULFIUS_INCLUDE) $(ADDITIONALFLAGS) $(CPPFLAGS)
-LIBS=-lc -lulfius -lorcania $(LYDER) -L$(ULFIUS_LOCATION)
+orcania_INCLUDE ?= $(shell pkg-config --cflags liborcania)
+orcania_LIBS ?= $(shell pkg-config --libs liborcania)
+
+CFLAGS+=-c -Wall -I$(ULFIUS_INCLUDE) $(orcania_INCLUDE) $(ADDITIONALFLAGS) $(CPPFLAGS)
+LIBS=-lc -lulfius $(orcania_LIBS) $(LYDER) -L$(ULFIUS_LOCATION)
 
 REMOTE_URL=http://localhost:9275/websocket/echo
 COMMAND=./uwsc --output-log-file=out.log $(REMOTE_URL)

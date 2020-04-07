@@ -29,9 +29,13 @@ CONFIG_FILE=$(ULFIUS_INCLUDE)/ulfius-cfg.h
 PKGCONFIG_FILE=../libulfius.pc
 PKGCONFIG_TEMPLATE=../libulfius.pc.in
 DESTDIR=/usr/local
+
+orcania_INCLUDE ?= $(shell pkg-config --cflags liborcania)
+orcania_LIBS ?= $(shell pkg-config --libs liborcania)
+
 CC=gcc
-CFLAGS+=-c -pedantic -std=gnu99 -fPIC -Wall -Werror -Wextra -D_REENTRANT -I$(ULFIUS_INCLUDE) $(ADDITIONALFLAGS) $(CPPFLAGS)
-LIBS=-L$(DESTDIR)/lib -lc -lmicrohttpd -lorcania -lpthread $(LDFLAGS)
+CFLAGS+=-c -pedantic -std=gnu99 -fPIC -Wall -Werror -Wextra -D_REENTRANT -I$(ULFIUS_INCLUDE) $(orcania_INCLUDE) $(ADDITIONALFLAGS) $(CPPFLAGS)
+LIBS=-L$(DESTDIR)/lib -lc -lmicrohttpd $(orcania_LIBS) -lpthread $(LDFLAGS)
 SONAME = -soname
 ifeq ($(shell uname -s),Darwin)
 	SONAME = -install_name
@@ -187,6 +191,9 @@ clean:
 	rm -f *.o *.so *.a $(OUTPUT) $(OUTPUT).* $(CONFIG_FILE) $(PKGCONFIG_FILE)
 
 install: all $(PKGCONFIG_FILE)
+	install -d -m755 $(DESTDIR)/lib
+	install -d -m755 $(DESTDIR)/lib/pkgconfig
+	install -d -m755 $(DESTDIR)/include
 	install $(OUTPUT).$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_PATCH) $(DESTDIR)/lib
 	install -m644 $(PKGCONFIG_FILE) $(DESTDIR)/lib/pkgconfig
 	install -m644 $(ULFIUS_INCLUDE)/ulfius.h $(DESTDIR)/include
@@ -194,6 +201,9 @@ install: all $(PKGCONFIG_FILE)
 	-ldconfig $(DESTDIR)/lib
 
 static-install: static
+	install -d -m755 $(DESTDIR)/lib
+	install -d -m755 $(DESTDIR)/lib/pkgconfig
+	install -d -m755 $(DESTDIR)/include
 	install libulfius.a $(DESTDIR)/lib
 	install -m644 $(PKGCONFIG_FILE) $(DESTDIR)/lib/pkgconfig
 	install -m644 $(ULFIUS_INCLUDE)/ulfius.h $(DESTDIR)/include
