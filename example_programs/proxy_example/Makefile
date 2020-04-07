@@ -16,8 +16,12 @@ CC=gcc
 ULFIUS_LOCATION=../../src
 ULFIUS_INCLUDE=../../include
 EXAMPLE_INCLUDE=../include
-CFLAGS+=-c -Wall -I$(ULFIUS_INCLUDE) -I$(EXAMPLE_INCLUDE) -D_REENTRANT $(ADDITIONALFLAGS) $(CPPFLAGS)
-LIBS=-lc -lorcania -lulfius -ljansson -L$(ULFIUS_LOCATION)
+
+orcania_INCLUDE ?= $(shell pkg-config --cflags liborcania)
+orcania_LIBS ?= $(shell pkg-config --libs liborcania)
+
+CFLAGS+=-c -Wall -I$(ULFIUS_INCLUDE) $(orcania_INCLUDE) -I$(EXAMPLE_INCLUDE) -D_REENTRANT $(ADDITIONALFLAGS) $(CPPFLAGS)
+LIBS=-lc $(orcania_LIBS) -lulfius -ljansson -L$(ULFIUS_LOCATION)
 
 ifndef YDERFLAG
 LIBS+= -lyder

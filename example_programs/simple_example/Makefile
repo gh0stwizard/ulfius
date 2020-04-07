@@ -16,9 +16,13 @@ PREFIX=/usr/local
 ULFIUS_LOCATION=../../src
 ULFIUS_INCLUDE=../../include
 EXAMPLE_INCLUDE=../include
+
+orcania_INCLUDE ?= $(shell pkg-config --cflags liborcania)
+orcania_LIBS ?= $(shell pkg-config --libs liborcania)
+
 CC=gcc
-CFLAGS+=-c -Wall -I$(ULFIUS_INCLUDE) -I$(EXAMPLE_INCLUDE) -D_REENTRANT $(ADDITIONALFLAGS) $(CPPFLAGS)
-LIBS=-L$(LIBYDER_LOCATION) -lc -lulfius -lorcania -L$(ULFIUS_LOCATION)
+CFLAGS+=-c -Wall -I$(ULFIUS_INCLUDE) $(orcania_INCLUDE) -I$(EXAMPLE_INCLUDE) -D_REENTRANT $(ADDITIONALFLAGS) $(CPPFLAGS)
+LIBS=-L$(LIBYDER_LOCATION) -lc -lulfius $(orcania_LIBS) -L$(ULFIUS_LOCATION)
 
 ifndef YDERFLAG
 LIBS+= -lyder

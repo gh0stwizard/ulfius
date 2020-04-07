@@ -16,9 +16,13 @@ CC=gcc
 ULFIUS_LOCATION=../../src
 ULFIUS_INCLUDE=../../include
 EXAMPLE_INCLUDE=../include
-CFLAGS+=-c -Wall -I$(ULFIUS_INCLUDE) -I$(EXAMPLE_INCLUDE) -I$(STATIC_FILE_LOCATION) $(ADDITIONALFLAGS) $(CPPFLAGS)
+
+orcania_INCLUDE ?= $(shell pkg-config --cflags liborcania)
+orcania_LIBS ?= $(shell pkg-config --libs liborcania)
+
+CFLAGS+=-c -Wall -I$(ULFIUS_INCLUDE) $(orcania_INCLUDE) -I$(EXAMPLE_INCLUDE) -I$(STATIC_FILE_LOCATION) $(ADDITIONALFLAGS) $(CPPFLAGS)
 STATIC_FILE_LOCATION=../../example_callbacks/static_file
-LIBS=-lc -lulfius -lorcania -L$(ULFIUS_LOCATION)
+LIBS=-lc -lulfius $(orcania_LIBS) -L$(ULFIUS_LOCATION)
 #SECUREFLAG=-https test.key test.pem
 
 ifndef YDERFLAG
